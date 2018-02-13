@@ -11,4 +11,6 @@ include "components:users"
 include "components:rest-support"
 include "components:test-support"
 
+include "platform-services:hystrix-dashboard"
+
 include "integration-test"
