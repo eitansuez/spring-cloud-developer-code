@@ -27,6 +27,10 @@ public class ApplicationServer {
             .inheritIO();
 
         processBuilder.environment().put("SERVER_PORT", port);
+        processBuilder.environment().put("SERVICE_LOCATOR_ENDPOINT_REGISTRATION_SERVER",
+                "http://localhost:8883");
+        processBuilder.environment().put("SERVICE_LOCATOR",
+                "local-config");
         env.forEach((key, value) -> processBuilder.environment().put(key, value));
 
         serverProcess = processBuilder.start();
@@ -34,7 +38,6 @@ public class ApplicationServer {
 
     public void start() throws IOException {
         start(envMapBuilder()
-            .put("REGISTRATION_SERVER_ENDPOINT", "http://localhost:8883")
             .build()
         );
     }
