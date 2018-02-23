@@ -1,5 +1,7 @@
 dependencies {
     compile project(":components:rest-support")
 
+    compile "org.springframework.cloud:spring-cloud-starter-sleuth:1.3.2.RELEASE"
+
     testCompile project(":components:test-support")
 }

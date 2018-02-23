@@ -3,6 +3,8 @@ package io.pivotal.pal.tracker.projects;
 import io.pivotal.pal.tracker.projects.data.ProjectDataGateway;
 import io.pivotal.pal.tracker.projects.data.ProjectFields;
 import io.pivotal.pal.tracker.projects.data.ProjectRecord;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +21,10 @@ import static java.util.stream.Collectors.toList;
 public class ProjectController {
 
     private final ProjectDataGateway gateway;
+    private final Tracer tracer;
 
-    public ProjectController(ProjectDataGateway gateway) {
+    public ProjectController(ProjectDataGateway gateway, Tracer tracer) {
+        this.tracer = tracer;
         this.gateway = gateway;
     }
 
@@ -41,8 +45,11 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     public ProjectInfo get(@PathVariable long projectId) {
         injectDelay(1L);
+        Span newSpan = this.tracer.createSpan("ProjectController.findProject");
 
         ProjectRecord record = gateway.find(projectId);
+
+        this.tracer.close(newSpan);
 
         if (record != null) {
             return present(record);
